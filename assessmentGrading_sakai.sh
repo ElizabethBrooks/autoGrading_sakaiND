@@ -148,7 +148,10 @@ if [ $gradingPreference -eq 1 ]; then
 			tmpScoreFileCleaned=tmpC"$scoredFile"
 			grep -iF "Score:" $scoredFile > $tmpScoreFile
 			cut -d ';' -f 2 $tmpScoreFile > $tmpScoreFileCleaned
-			sed -i "s/Score/Q$questionFileNum/g" $tmpScoreFileCleaned
+			sed -i "s/Score: //g" $tmpScoreFileCleaned
+			#Add current question tag to end header
+			sed -i "1 s/$/, Q$questionFileNum/" $tmpScoreFileCleaned
+			#Add current score file to array
 			SCOREFILES+="$tmpScoreFileCleaned "
 			#clean up
 			rm "$tmpScoreFile"
@@ -157,6 +160,7 @@ if [ $gradingPreference -eq 1 ]; then
 		done
 		#Insert student IDs
 		printf "%s\n" "${IDARRAY[@]}" > tmpStudentIDList.csv
+		#Merge score files
 		paste -d ';' tmpStudentIDList.csv ${SCOREFILES[@]} > allScores$assesmentTag.csv
 		#Clean up
 		sed -i 's/;/; /g' allScores$assesmentTag.csv
