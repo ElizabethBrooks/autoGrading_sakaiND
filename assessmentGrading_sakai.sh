@@ -117,7 +117,7 @@ if [ $gradingPreference -eq 1 ]; then
 			while [ $studentNum -le $studentCount ]; do
 				#Identify current student response and display
 				currentStudent=${IDARRAY[$studentNum-1]}
-				grep -iF "$currentStudent" $questionFile >> $scoredQuestions
+				grep -iF "$currentStudent" $questionFile | sed 's/NEWLINE/\n/g' >> $scoredQuestions
 				grep -iF "$currentStudent" $questionFile | sed 's/NEWLINE/\n/g'
 				#Accept score input and write to files
 				read -p "Score: " scoreEntry
@@ -125,10 +125,10 @@ if [ $gradingPreference -eq 1 ]; then
 				#Accept comment input and write to file
 				read -p "Comments (Press enter when finished): " commentEntry
 				echo ";Comments: $commentEntry" >> $scoredQuestions
+				#Output response separator to stdin
+				echo "~"
 				#Increment student ID
 				let studentNum+=1
-				#Clean up
-				sed -i 's/NEWLINE/\n/g' $scoredQuestions
 			done
 			#clean up
 			rm "$questionFile"
