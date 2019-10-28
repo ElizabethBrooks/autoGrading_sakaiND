@@ -115,16 +115,19 @@ if [ $gradingPreference -eq 1 ]; then
 			#Loop through all student responses and allow scoring and commenting
 			studentNum=1
 			while [ $studentNum -le $studentCount ]; do
-				#Identify current student response and display
+				#Identify current student response
 				currentStudent=${IDARRAY[$studentNum-1]}
-				grep -iF "$currentStudent" $questionFile | sed 's/NEWLINE/\n/g' >> $scoredQuestions
-				grep -iF "$currentStudent" $questionFile | sed 's/NEWLINE/\n/g'
+				#grep -iF "$currentStudent" $questionFile | sed 's/NEWLINE/\n/g' | sed 's/""/"/g' >> $scoredQuestions
+				#Display current student response
+				grep -iF "$currentStudent" $questionFile | sed 's/NEWLINE/\n/g' | sed 's/""/"/g'
+				#Write current student ID to file
+				echo "$currentStudent;" >> $scoredQuestions
 				#Accept score input and write to files
-				read -p "Score: " scoreEntry
-				echo ";Score: $scoreEntry" >> $scoredQuestions
+				read -p "SCORE: " scoreEntry
+				echo "SCORE: $scoreEntry;" >> $scoredQuestions
 				#Accept comment input and write to file
-				read -p "Comments (Press enter when finished): " commentEntry
-				echo ";Comments: $commentEntry" >> $scoredQuestions
+				read -p "COMMENTS (Press enter when finished): " commentEntry
+				echo "COMMENTS: $commentEntry;" >> $scoredQuestions
 				#Output response separator to file and stdin
 				echo "~" >> $scoredQuestions
 				echo "~"
@@ -147,17 +150,17 @@ if [ $gradingPreference -eq 1 ]; then
 		for scoredFile in scoredQuestion*.csv; do
 			#Temporary score file names
 			tmpScoreFile=tmp"$scoredFile"
-			tmpScoreFileCleaned=tmpC"$scoredFile"
+			tmpScoreFileCleaned=tmp"$scoredFile"
 			#Retrieve scores for current question
-			grep -iF "Score:" $scoredFile > $tmpScoreFile
+			grep -iF "SCORE:" $scoredFile > $tmpScoreFile
 			cut -d ';' -f 2 $tmpScoreFile > $tmpScoreFileCleaned
-			sed -i "s/Score: //g" $tmpScoreFileCleaned
+			sed -i "s/SCORE: //g" $tmpScoreFileCleaned
 			#Add current question tag to header
 			SCOREFILE+="Q$questionFileNum "
 			#Add current question scores file to array
 			SCOREFILES+="$tmpScoreFileCleaned "
 			#clean up
-			rm "$tmpScoreFile"
+			#rm "$tmpScoreFile"
 			#Increment question file
 			let questionFileNum+=1
 		done
