@@ -145,14 +145,16 @@ if [ $gradingPreference -eq 1 ]; then
 		#Add cleaned scores to file array
 		questionFileNum=1
 		for scoredFile in scoredQuestion*.csv; do
+			#Temporary score file names
 			tmpScoreFile=tmp"$scoredFile"
 			tmpScoreFileCleaned=tmpC"$scoredFile"
+			#Retrieve scores for current question
 			grep -iF "Score:" $scoredFile > $tmpScoreFile
 			cut -d ';' -f 2 $tmpScoreFile > $tmpScoreFileCleaned
 			sed -i "s/Score: //g" $tmpScoreFileCleaned
-			#Add current question tag to end header
-			sed -i "1 s/$/, Q$questionFileNum/" $tmpScoreFileCleaned
-			#Add current score file to array
+			#Add current question tag to header
+			SCOREFILE+="Q$questionFileNum "
+			#Add current question scores file to array
 			SCOREFILES+="$tmpScoreFileCleaned "
 			#clean up
 			rm "$tmpScoreFile"
