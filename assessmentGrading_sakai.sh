@@ -125,7 +125,8 @@ if [ $gradingPreference -eq 1 ]; then
 				#Accept comment input and write to file
 				read -p "Comments (Press enter when finished): " commentEntry
 				echo ";Comments: $commentEntry" >> $scoredQuestions
-				#Output response separator to stdin
+				#Output response separator to file and stdin
+				echo "~" >> $scoredQuestions
 				echo "~"
 				#Increment student ID
 				let studentNum+=1
